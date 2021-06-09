@@ -1,0 +1,13 @@
+.NavigationItem{
+    margin: 10px;
+}
+
+.NavigationItem a {
+    text-decoration: none;
+    color: #03256c;
+}
+
+.NavigationItem a:hover {
+    color: #ff7b54;
+}
+
