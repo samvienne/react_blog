@@ -1,0 +1,25 @@
+.Ajouter {
+    width: 80%;
+    background-color: #B6C9F0;
+    margin: auto;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.submit {
+    padding: 10px 15px;
+    background-color: #CE1212;
+    border-radius: 5px;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.submit:hover{
+    background-color: #FA1E0E;
+}
+
+.submit:disabled {
+    background-color: grey;
+    cursor: not-allowed;
+}

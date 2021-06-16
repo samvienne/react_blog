@@ -7,7 +7,9 @@
     color: #03256c;
 }
 
-.NavigationItem a:hover {
+.NavigationItem a:hover,
+.NavigationItem a:focus,
+.NavigationItem a.active {
     color: #ff7b54;
 }
 
