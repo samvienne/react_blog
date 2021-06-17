@@ -2,7 +2,8 @@
 import React from 'react';
 import './App.css';
 import {Route, Switch} from 'react-router-dom';
-import routes from './routes';
+import routes from './config/routes';
+
 
 //Components
 import Layout from './hoc/Layout/Layout';

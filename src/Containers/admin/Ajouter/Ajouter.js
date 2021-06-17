@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 
 import Input from '../../../Components/UI/Input/Input';
 import classes from './Ajouter.module.css';
+import axios from '../../../config/axio-firebase';
+import routes from '../../../config/routes';
 
-function Ajouter() {
+function Ajouter(props) {
 
     //States
 
@@ -24,7 +26,22 @@ function Ajouter() {
                 minLength: 5,
                 maxLength: 85
             },
-            touched: false
+            touched: false,
+            errorMessage: "Le titre doit comporter entre 5 et 85 caractères"
+        },
+        accroche: {
+            elementType: 'textarea',
+            elementConfig: {},
+            value : '',
+            label: "Accroche de l'article",
+            valid: false,
+            validation: {
+                required: true,
+                minLength: 10,
+                maxLength: 140
+            },
+            touched: false,
+            errorMessage: "Ce champ ne peut pas être vide. Doit être compris entre 10 et 140 caractères"
         },
         contenu: {
             elementType: 'textarea',
@@ -35,7 +52,8 @@ function Ajouter() {
             validation: {
                 required: true
             },
-            touched: false
+            touched: false,
+            errorMessage: "Ce champ ne peut pas être vide"
         },
         auteur: {
             elementType: 'input',
@@ -49,7 +67,8 @@ function Ajouter() {
             validation: {
                 required: true
             },
-            touched: false
+            touched: false,
+            errorMessage: "Ce champ ne peut pas être vide"
         },
         brouillon: {
             elementType: 'select',
@@ -59,7 +78,7 @@ function Ajouter() {
                     {value: false, displayValue: 'Publié'}
                 ]
             },
-            value: '',
+            value: true,
             label: 'Etat',
             valid: true,
             validation: {}
@@ -69,6 +88,24 @@ function Ajouter() {
     //functions
     const formHandler = (event) => {
         event.preventDefault();
+
+        const article = {
+            titre: inputs.titre.value,
+            contenu: inputs.contenu.value,
+            auteur: inputs.auteur.value,
+            brouillon: inputs.brouillon.value,
+            accroche: inputs.accroche.value,
+            date: Date.now()
+        }
+
+        axios.post('/articles.json', article).then(
+            response => {
+                console.log(response);
+                props.history.replace(routes.ARTICLES);
+            }
+        ).catch(error => {
+            console.log(error);
+        });
     }
 
     const checkvalidity = (value, rules) => {
@@ -130,6 +167,7 @@ function Ajouter() {
                     valid={formElement.config.valid}
                     changed={(e) => intputChangedHnadler(e, formElement.id)}
                     touched={formElement.config.touched}
+                    errorMessage={formElement.config.errorMessage}
                 />
             ))}
             <input className={classes.submit} type="submit" value="Envoyer" disabled={!valid}/>

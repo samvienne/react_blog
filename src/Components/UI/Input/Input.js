@@ -42,7 +42,7 @@ function Input(props) {
         <div className={classes.Input}>
             <label htmlFor={props.id}>{props.label}</label>
             {inputElement}
-            { !props.valid && props.touched ? <span>Ce champ est invalide.</span> : null}
+            { !props.valid && props.touched ? <span>{props.errorMessage}</span> : null}
         </div>
     );
 }
