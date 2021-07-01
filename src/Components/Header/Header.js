@@ -3,7 +3,7 @@ import Navigation from './Navigation/Navigation';
 
 import classes from './Header.module.css';
 
-function Header() {
+function Header(props) {
     return (
         <header className={classes.Header}>
             <div className={['container', classes.flex].join(' ')}>
@@ -11,7 +11,7 @@ function Header() {
                     BLOG
                 </div>
                 <nav>
-                    <Navigation/>
+                    <Navigation user={props.user}/>
                 </nav>
             </div>
         </header>

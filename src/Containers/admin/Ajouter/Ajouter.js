@@ -4,12 +4,14 @@ import Input from '../../../Components/UI/Input/Input';
 import classes from './Ajouter.module.css';
 import axios from '../../../config/axio-firebase';
 import routes from '../../../config/routes';
+import {checkvalidity} from '../../../shared/utility';
+import fire from '../../../config/firebase';
 
 function Ajouter(props) {
 
     //States
 
-    const [valid, setValid] = useState(false);
+    const [valid, setValid] = useState(props.location.state && props.location.state.article ? true : false);
 
     const [inputs, setInputs ] = useState({
         titre: {
@@ -18,9 +20,9 @@ function Ajouter(props) {
                 type: 'text',
                 placeholder: "Titre de l'article"
             },
-            value: '',
+            value: props.location.state && props.location.state.article ? props.location.state.article.titre : '',
             label: 'Titre',
-            valid: false,
+            valid: props.location.state && props.location.state.article ? true : false,
             validation: {
                 required: true,
                 minLength: 5,
@@ -32,9 +34,9 @@ function Ajouter(props) {
         accroche: {
             elementType: 'textarea',
             elementConfig: {},
-            value : '',
+            value : props.location.state && props.location.state.article ? props.location.state.article.accroche : '',
             label: "Accroche de l'article",
-            valid: false,
+            valid: props.location.state && props.location.state.article ? true : false,
             validation: {
                 required: true,
                 minLength: 10,
@@ -46,9 +48,9 @@ function Ajouter(props) {
         contenu: {
             elementType: 'textarea',
             elementConfig: {},
-            value : '',
+            value : props.location.state && props.location.state.article ? props.location.state.article.contenu : '',
             label: "Contenu de l'article",
-            valid: false,
+            valid: props.location.state && props.location.state.article ? true : false,
             validation: {
                 required: true
             },
@@ -61,9 +63,9 @@ function Ajouter(props) {
                 type: 'text',
                 placeholder: "Auteur de l'article"
             },
-            value: '',
+            value: props.location.state && props.location.state.article ? props.location.state.article.auteur : '',
             label: "Auteur de l'article",
-            valid: false,
+            valid: props.location.state && props.location.state.article ? true : false,
             validation: {
                 required: true
             },
@@ -78,14 +80,33 @@ function Ajouter(props) {
                     {value: false, displayValue: 'Publié'}
                 ]
             },
-            value: true,
+            value: props.location.state && props.location.state.article ? props.location.state.article.brouillon : '',
             label: 'Etat',
-            valid: true,
+            valid: props.location.state && props.location.state.article ? true : false,
             validation: {}
         }
     });
 
     //functions
+
+    const generateSlug= str => {
+        str = str.replace(/^\s+|\s+$/g, ''); // trim
+        str = str.toLowerCase();
+      
+        // remove accents, swap ñ for n, etc
+        var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
+        var to   = "aaaaeeeeiiiioooouuuunc------";
+        for (var i=0, l=from.length ; i<l ; i++) {
+            str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+        }
+    
+        str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+            .replace(/\s+/g, '-') // collapse whitespace and replace by -
+            .replace(/-+/g, '-'); // collapse dashes
+    
+        return str;
+    }
+
     const formHandler = (event) => {
         event.preventDefault();
 
@@ -95,35 +116,33 @@ function Ajouter(props) {
             auteur: inputs.auteur.value,
             brouillon: inputs.brouillon.value,
             accroche: inputs.accroche.value,
-            date: Date.now()
+            date: Date.now(),
+            slug: generateSlug(inputs.titre.value)
         }
 
-        axios.post('/articles.json', article).then(
-            response => {
-                console.log(response);
-                props.history.replace(routes.ARTICLES);
-            }
-        ).catch(error => {
-            console.log(error);
-        });
-    }
-
-    const checkvalidity = (value, rules) => {
-        let isValid = true;
-
-        if(rules.required) {
-            isValid = value.trim() !== '' && isValid;
-        }
-
-        if(rules.minLength) {
-            isValid = value.length >= rules.minLength && isValid;
-        }
-
-        if(rules.maxLength) {
-            isValid = value.length <= rules.maxLength && isValid;
-        }
-
-        return isValid;
+        fire.auth().currentUser.getIdToken()
+            .then(token => {
+                if (props.location.state && props.location.state.article) {
+                    axios.put('/articles/'+props.location.state.article.id+'.json?auth=' + token, article).then(
+                        response => {
+                            props.history.replace(routes.ARTICLES+'/'+ article.slug);
+                        }
+                    ).catch(error => {
+                        console.log(error);
+                    });
+                } else {
+                    axios.post('/articles.json?auth=' + token, article).then(
+                        response => {
+                            props.history.replace(routes.ARTICLES);
+                        }
+                    ).catch(error => {
+                        console.log(error);
+                    });
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
 
     const intputChangedHnadler = (event, id) => {
@@ -170,13 +189,17 @@ function Ajouter(props) {
                     errorMessage={formElement.config.errorMessage}
                 />
             ))}
-            <input className={classes.submit} type="submit" value="Envoyer" disabled={!valid}/>
+            <input className={classes.submit} type="submit" value={props.location.state && props.location.state.article ? 'Modifier un article' : 'Ajouter un article'} disabled={!valid}/>
         </form>
     );
 
     return(
         <div className="container">
-            <h1>Ajouter</h1>
+            {props.location.state && props.location.state.article ?
+                <h1>Modifier</h1>
+                :
+                <h1>Ajouter</h1>
+            }
             {form}
         </div>
     );

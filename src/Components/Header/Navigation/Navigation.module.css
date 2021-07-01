@@ -4,3 +4,16 @@
     padding: 0;
     display: flex;
 }
+
+.logout{
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    color: white;
+    background-color:#ff7b54;
+}
+
+.logout:hover {
+    background-color:#da4518;
+}

@@ -1,0 +1,19 @@
+.link {
+    text-align: center;
+    text-decoration: none;
+    background-color: seagreen;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin: 0 auto;
+    display: block;
+    width: 200px;
+    color: white;
+}
+
+.link:hover {
+    background-color: rgb(40, 70, 67);
+}
+
+.link svg {
+    margin-left: 5px;
+}

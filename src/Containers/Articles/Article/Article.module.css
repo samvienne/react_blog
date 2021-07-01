@@ -1,0 +1,24 @@
+.lead {
+    color: rgba(0, 0, 0, .5);
+    text-align: center;
+}
+
+.content {
+    text-align: left;
+}
+
+.button {
+    display: inline-block;
+    margin-left: 20px;
+    border: 0;
+    padding: 10px 15px;
+    background-color: #e20e0e;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button:hover,
+.button:focus {
+    background-color: #5e56a0;
+}
