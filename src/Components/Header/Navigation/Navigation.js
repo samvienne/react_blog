@@ -7,12 +7,14 @@ import { withRouter } from 'react-router-dom';
 //Composants
 import NavigationItem from './NavigationItem/NavigationItem';
 import fire from '../../../config/firebase';
+import { toast } from 'react-toastify';
 
 
 function Navigation(props) {
 
     const onClickLogout = () => {
         fire.auth().signOut();
+        toast.success("Déconnecté");
         props.history.push(routes.AUTHENTIFICATION);        
     }
 

@@ -2,6 +2,7 @@ import React from 'react';
 import classes from './Displayarticle.module.css';
 import { Link } from 'react-router-dom';
 import routes from '../../config/routes';
+import PropTypes from 'prop-types';
 
 function DisplayArticle(props) {
     return(
@@ -14,5 +15,10 @@ function DisplayArticle(props) {
         </Link>
     );
 }
+
+//PropTypes permet de vérifier les valeurs
+DisplayArticle.propTypes = {
+    article: PropTypes.object
+};
 
 export default DisplayArticle;

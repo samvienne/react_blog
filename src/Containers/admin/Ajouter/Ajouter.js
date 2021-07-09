@@ -6,6 +6,7 @@ import axios from '../../../config/axio-firebase';
 import routes from '../../../config/routes';
 import {checkvalidity} from '../../../shared/utility';
 import fire from '../../../config/firebase';
+import { toast } from 'react-toastify';
 
 function Ajouter(props) {
 
@@ -125,6 +126,9 @@ function Ajouter(props) {
                 if (props.location.state && props.location.state.article) {
                     axios.put('/articles/'+props.location.state.article.id+'.json?auth=' + token, article).then(
                         response => {
+                            //notification
+                            toast.success("Article modifié avec succès!");
+                            //redirection
                             props.history.replace(routes.ARTICLES+'/'+ article.slug);
                         }
                     ).catch(error => {
@@ -133,6 +137,7 @@ function Ajouter(props) {
                 } else {
                     axios.post('/articles.json?auth=' + token, article).then(
                         response => {
+                            toast.success('Article ajouté avec succès');
                             props.history.replace(routes.ARTICLES);
                         }
                     ).catch(error => {

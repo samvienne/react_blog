@@ -4,6 +4,7 @@ import Input from '../../../Components/UI/Input/Input';
 import classes from './Authentification.module.css';
 import routes from '../../../config/routes';
 import fire from '../../../config/firebase';
+import { toast } from 'react-toastify';
 
 function Authentification(props) {
 
@@ -76,6 +77,7 @@ function Authentification(props) {
             .auth()
             .createUserWithEmailAndPassword(user.email, user.password)
             .then(reponse => {
+                toast.success("Bienvenue sur le blog!");
                 props.history.push(routes.HOME);
             })
             .catch(error => {
@@ -98,6 +100,7 @@ function Authentification(props) {
             .auth()
             .signInWithEmailAndPassword(user.email, user.password)
             .then(response => {
+                toast.success("Welcome back!");
                 props.history.push(routes.HOME);
             })
             .catch(error => {

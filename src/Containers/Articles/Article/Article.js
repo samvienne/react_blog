@@ -4,6 +4,9 @@ import axios from '../../../config/axio-firebase';
 import routes from '../../../config/routes';
 import classes from '../Article/Article.module.css';
 import { Link, withRouter } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import moment from 'moment';
+import 'moment/locale/fr';
 
 function Article(props) {
     
@@ -16,6 +19,7 @@ function Article(props) {
             response => {
 
                 if(Object.keys(response.data).length === 0) {
+                    toast.error("Cet article n'existe pas");
                     props.history.push(routes.HOME);
                 }
 
@@ -31,7 +35,15 @@ function Article(props) {
         });
     }, []);
 
-    let date = new Date(article.date).toLocaleDateString('fr-FR');
+    //Afficher le titre de l'article dans l'onglet - à faire dans chaque page
+    useEffect(()=> {
+        document.title = article.titre;
+    });
+
+    //let date = new Date(article.date).toLocaleDateString('fr-FR');
+    // Avec utilisation librairie moment.js
+    moment.locale('fr');
+    let date = moment.unix(article.date / 1000).format('LLLL');
 
     const deleteClickHandler = () => {
 
@@ -40,6 +52,7 @@ function Article(props) {
                 axios.delete('/articles/'+article.id+'.json?auth='+token).then(
                     response => {
                         console.log(response);
+                        toast.success("Article supprimé avec succès");
                         props.history.push(routes.HOME);
                     }
                 ).catch(error => {
